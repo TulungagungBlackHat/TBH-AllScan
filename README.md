@@ -1,13 +1,13 @@
-# TBH-AllScan v3.0 Pro - Dashboard + AI Summary
+# TBH-AllScan v3.1 Pro - Time + Progress
 
-<p align="center"><img src="https://img.shields.io/badge/Version-v3.0%20Pro-red?style=for-the-badge"><img src="https://img.shields.io/badge/Pro-Dashboard%20%2B%20AI-orange?style=for-the-badge"></p>
+<p align="center"><img src="https://img.shields.io/badge/Version-v3.1%20Pro-red?style=for-the-badge"></p>
 
-> **Pro v3.0** - Dashboard HTML + AI Summary + Risk Score.
+> **Pro v3.1** - Tambah elapsed time.
 
 ## 🚀 Usage
 ```bash
-python3 allscan.py -u https://example.com --json report.json --html report.html --fix fix.sh
-# HTML dashboard dengan ringkasan AI
+python3 allscan.py -u https://example.com --json report.json --html report.html
+# [Time] 0.5s | Risk Low (3)
 ```
 
 ## 👥 TBH
