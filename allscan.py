@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
-# TBH-AllScan v2.9 Pro - Auto-Fix Script
+# TBH-AllScan v3.0 Pro - Full Dashboard
 import socket, requests, argparse, json
 from datetime import datetime
 
 BANNER = """\033[91m╔════════════════════════════════════════╗
-\033[91m║ \033[97mTBH-AllScan v2.9 Pro \033[91m- Auto-Fix       \033[91m║
+\033[91m║ \033[97mTBH-AllScan v3.0 Pro \033[91m- Dashboard     \033[91m║
 \033[91m║ \033[90mTulungagung Black Hat | uchil404     \033[91m║
 \033[91m╚════════════════════════════════════════╝\033[0m"""
 
 def check_headers(url):
-    r=requests.get(url,timeout=5,headers={'User-Agent':'TBH-AllScan/2.9'})
+    r=requests.get(url,timeout=5,headers={'User-Agent':'TBH-AllScan/3.0'})
     missing=[h for h in ['Content-Security-Policy','Strict-Transport-Security','X-Frame-Options'] if h not in r.headers]
-    if missing: bug={"severity":"Low","title":"Missing Security Headers","missing":missing,"fix":"Tambah CSP: default-src 'self'; HSTS max-age=31536000","autofix":"add_header Content-Security-Policy \"default-src 'self'\";\\nadd_header Strict-Transport-Security \"max-age=31536000\";"}
-    else: bug=None
+    bug={"severity":"Low","title":"Missing Security Headers","fix":"Tambah CSP/HSTS","autofix":"add_header CSP"} if missing else None
     return {"missing":missing,"bug":bug}
 
 def check_ports(ip):
@@ -21,7 +20,7 @@ def check_ports(ip):
         s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.settimeout(1)
         if s.connect_ex((ip,p))==0: open_ports.append(p)
         s.close()
-    bug={"severity":"Info","title":"Open Ports","ports":open_ports,"fix":"ufw deny 8080","autofix":"sudo ufw deny 8080"} if open_ports else None
+    bug={"severity":"Info","title":"Open Ports","fix":"Tutup tidak perlu","autofix":"ufw deny"} if open_ports else None
     return {"open":open_ports,"bug":bug}
 
 def allscan(url):
@@ -36,27 +35,37 @@ def allscan(url):
         if res.get("bug"): report["bugs"].append({"tool":name,**res["bug"]}); print(f"[!] {res['bug']['title']} [{res['bug']['severity']}]")
         else: print("[✓] OK")
     score=sum({"High":10,"Medium":5,"Low":2,"Info":1}.get(b["severity"],0) for b in report["bugs"])
-    report["risk_score"]=score; report["risk_level"]="Low" if score<5 else "Medium"
-    print(f"\n[Risk] {score} -> {report['risk_level']}")
+    level="Critical" if score>=15 else "High" if score>=10 else "Medium" if score>=5 else "Low" if score>=2 else "Info"
+    report["risk_score"]=score; report["risk_level"]=level
+    # AI-like summary
+    summary=f"Target {domain} memiliki {len(report['bugs'])} bug dengan risk {level} ({score}). Rekomendasi: perbaiki {', '.join([b['title'] for b in report['bugs']])} segera."
+    report["summary"]=summary
+    print(f"\n[AI Summary] {summary}")
     return report
 
 def main():
     print(BANNER)
-    parser=argparse.ArgumentParser(description="v2.9")
+    parser=argparse.ArgumentParser(description="v3.0")
     parser.add_argument("-u","--url",required=True)
     parser.add_argument("--json",help="Save JSON")
     parser.add_argument("--html",help="Save HTML")
-    parser.add_argument("--fix",help="Save auto-fix script sh")
+    parser.add_argument("--fix",help="Save fix sh")
     args=parser.parse_args()
     report=allscan(args.url)
-    print(f"[✓] Found {len(report['bugs'])} bugs")
+    print(f"[✓] Found {len(report['bugs'])} bugs | Risk: {report['risk_level']} ({report['risk_score']})")
     if args.json: open(args.json,'w').write(json.dumps(report,indent=2)); print(f"[✓] JSON: {args.json}")
     if args.html:
-        rows="".join([f"<tr><td>{b['tool']}</td><td>{b['severity']}</td><td>{b['title']}</td><td>{b.get('fix','')}</td><td><pre>{b.get('autofix','')}</pre></td></tr>" for b in report["bugs"]])
-        html=f"<html><body style='background:#0d1117;color:#c9d1d9;padding:20px;font-family:monospace'><h1>TBH-AllScan v2.9 Pro {report['target']} | Risk {report['risk_level']} ({report['risk_score']})</h1><table border=1 style='border-collapse:collapse;width:100%'><tr><th>Tool</th><th>Severity</th><th>Bug</th><th>Fix</th><th>Auto-Fix</th></tr>{rows}</table></body></html>"
-        open(args.html,'w').write(html); print(f"[✓] HTML: {args.html}")
+        rows="".join([f"<tr><td>{b['tool']}</td><td style='background:{ {'High':'#ff0000','Medium':'#ff8c00','Low':'#ffcc00','Info':'#58a6ff'}.get(b['severity'],'#c9d1d9')};color:#000'>{b['severity']}</td><td>{b['title']}</td><td>{b.get('fix','')}</td></tr>" for b in report["bugs"]])
+        html=f"""<html><head><style>body{{background:#0d1117;color:#c9d1d9;font-family:monospace;padding:20px}} table{{border-collapse:collapse;width:100%}} th,td{{border:1px solid #30363d;padding:8px}} th{{background:#ff0000;color:#fff}} .summary{{background:#161b22;padding:15px;border-left:4px solid #ff0000;margin:15px 0}}</style></head><body>
+<h1>TBH-AllScan v3.0 Pro Dashboard - {report['target']}</h1>
+<p>Risk: <b style='color:{"#ff0000" if report['risk_level']=="High" else "#ffcc00"}'>{report['risk_level']} ({report['risk_score']})</b> | {report['time']}</p>
+<div class='summary'><b>AI Summary:</b> {report['summary']}</div>
+<table><tr><th>Tool</th><th>Severity</th><th>Bug</th><th>Fix</th></tr>{rows}</table>
+<pre>{json.dumps(report,indent=2)}</pre>
+</body></html>"""
+        open(args.html,'w').write(html); print(f"[✓] HTML Dashboard: {args.html}")
     if args.fix:
         script="\n".join([b.get('autofix','') for b in report["bugs"] if b.get('autofix')])
-        open(args.fix,'w').write("#!/bin/bash\n# Auto-fix generated by TBH-AllScan v2.9 Pro\n"+script); print(f"[✓] Fix script: {args.fix}")
+        open(args.fix,'w').write("#!/bin/bash\n# Auto-fix v3.0 Pro\n"+script); print(f"[✓] Fix: {args.fix}")
 
 if __name__=="__main__": main()
