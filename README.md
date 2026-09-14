@@ -1,13 +1,13 @@
-# TBH-AllScan v2.3 Pro - Severity Color
+# TBH-AllScan v2.4 Pro - Risk Score
 
-<p align="center"><img src="https://img.shields.io/badge/Version-v2.3%20Pro-red?style=for-the-badge"><img src="https://img.shields.io/badge/Pro-Severity%20Color-orange?style=for-the-badge"></p>
+<p align="center"><img src="https://img.shields.io/badge/Version-v2.4%20Pro-red?style=for-the-badge"><img src="https://img.shields.io/badge/Pro-Risk%20Score-orange?style=for-the-badge"></p>
 
-> **Pro v2.3** - HTML severity berwarna: High merah, Medium orange, Low kuning, Info biru.
+> **Pro v2.4** - Tambah **Risk Score**: High=10, Medium=5, Low=2, Info=1 → Level Critical/High/Medium/Low.
 
 ## 🚀 Usage
 ```bash
-python3 allscan.py -u https://example.com --html report.html
-# Buka report.html -> tabel berwarna
+python3 allscan.py -u https://example.com --json report.json --html report.html
+# Risk: Medium (3) -> 2 bugs Low+Info
 ```
 
 ## 👥 TBH
