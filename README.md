@@ -1,8 +1,8 @@
-# TBH-AllScan v3.5 Pro - Final Polish
+# TBH-AllScan v4.0 Pro Major
 
-<p align="center"><img src="https://img.shields.io/badge/Version-v3.5%20Pro-red?style=for-the-badge"><img src="https://img.shields.io/badge/Pro-Final%20Polish-green?style=for-the-badge"></p>
+<p align="center"><img src="https://img.shields.io/badge/Version-v4.0%20Pro%20Major-red?style=for-the-badge"><img src="https://img.shields.io/badge/Major-Release-orange?style=for-the-badge"></p>
 
-> **Pro v3.5** - Final polish, siap portfolio.
+> **Pro v4.0 Major** - Major release, full polish.
 
 ## 🚀 Usage
 ```bash
