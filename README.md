@@ -1,8 +1,8 @@
-# TBH-AllScan v3.3 Pro - Progress Bar
+# TBH-AllScan v3.4 Pro - Color Progress
 
-<p align="center"><img src="https://img.shields.io/badge/Version-v3.3%20Pro-red?style=for-the-badge"><img src="https://img.shields.io/badge/Pro-Progress%20Bar-green?style=for-the-badge"></p>
+<p align="center"><img src="https://img.shields.io/badge/Version-v3.4%20Pro-red?style=for-the-badge"></p>
 
-> **Pro v3.3** - Progress bar `[████░░░░░░] 4/10`.
+> **Pro v3.4** - Color progress bar.
 
 ## 🚀 Usage
 ```bash
