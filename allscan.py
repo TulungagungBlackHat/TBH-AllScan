@@ -53,7 +53,6 @@ Cara:
         else: print("[!] Pilih 0/1/2")
 
 def main():
-    print(BANNER)
     parser=argparse.ArgumentParser(description="TBH-AllScan v4.5 Pro - Menu+Command", add_help=False)
     parser.add_argument("-u","--url",help="Target URL")
     parser.add_argument("--json",help="Save JSON")
@@ -61,9 +60,11 @@ def main():
     parser.add_argument("-h","--help",action="store_true",help="Help")
     args, _ = parser.parse_known_args()
     if args.help:
+        print(BANNER)
         print("Usage:\n  Menu:    python3 allscan.py\n  Command: python3 allscan.py -u https://example.com --json report.json --html report.html")
         return
     if args.url:
+        print(BANNER)
         report=allscan(args.url)
         if args.json: open(args.json,'w').write(json.dumps(report,indent=2)); print(f"[✓] JSON: {args.json}")
         if args.html:
