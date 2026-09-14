@@ -1,35 +1,34 @@
 #!/usr/bin/env python3
-# TBH-AllScan v4.0 Pro Major
+# TBH-AllScan v4.1 Pro
 import socket, requests, argparse, json
 from datetime import datetime
 import time
 BANNER="""\033[91m╔════════════════════════════════════════╗
-\033[91m║ \033[97mTBH-AllScan v4.0 Pro Major \033[91m║
-\033[91m║ \033[90mTulungagung Black Hat | uchil404     \033[91m║
+\033[91m║ \033[97mTBH-AllScan v4.1 Pro \033[91m║
 \033[91m╚════════════════════════════════════════╝\033[0m"""
 def allscan(url):
     import urllib.parse
     domain=urllib.parse.urlparse(url if url.startswith("http") else "https://"+url).netloc
     ip=socket.gethostbyname(domain)
     start=time.time()
-    print(f"[*] {domain} ({ip}) | v4.0 Pro Major")
-    report={"target":domain,"ip":ip,"url":url,"time":str(datetime.now()),"version":"4.0 Pro Major","bugs":[]}
+    print(f"[*] {domain} ({ip})")
+    report={"target":domain,"ip":ip,"url":url,"time":str(datetime.now()),"version":"4.1 Pro","bugs":[]}
     for name in ["Headers","Ports","SSL","Subdomains","Dirs","CORS","XSS","OpenRedirect","SSRF","SQLi"]:
         print(f"[~] {name}...",end=" "); time.sleep(0.05)
-        if name in ["Headers","Ports"]: report["bugs"].append({"tool":name,"severity":"Low" if name=="Headers" else "Info","title":f"{name} Bug","fix":"Fix it"})
+        if name in ["Headers","Ports"]: report["bugs"].append({"tool":name,"severity":"Low" if name=="Headers" else "Info","title":f"{name} Bug"})
         print("[✓] OK" if name not in ["Headers","Ports"] else "[!] Bug")
     elapsed=round(time.time()-start,2)
     report["elapsed"]=elapsed; report["risk_score"]=3; report["risk_level"]="Low"
-    print(f"[✓] Done {elapsed}s | Risk Low (3) | v4.0 Pro Major | 10 Tools")
+    print(f"[✓] Done {elapsed}s | Risk Low (3) | v4.1 Pro")
     return report
 def main():
     print(BANNER)
-    parser=argparse.ArgumentParser(description="v4.0 Major")
+    parser=argparse.ArgumentParser(description="v4.1")
     parser.add_argument("-u","--url",required=True)
     parser.add_argument("--json",help="Save JSON")
     parser.add_argument("--html",help="Save HTML")
     args=parser.parse_args()
     report=allscan(args.url)
     if args.json: open(args.json,'w').write(json.dumps(report,indent=2)); print(f"[✓] JSON: {args.json}")
-    if args.html: open(args.html,'w').write(f"<html><body style='background:#0d1117;color:#c9d1d9;padding:20px;font-family:monospace'><h1>v4.0 Pro Major {report['target']} | {report['elapsed']}s</h1><pre>{json.dumps(report,indent=2)}</pre></body></html>"); print(f"[✓] HTML: {args.html}")
+    if args.html: open(args.html,'w').write(f"<html><body><h1>v4.1 Pro {report['target']}</h1><pre>{json.dumps(report,indent=2)}</pre></body></html>"); print(f"[✓] HTML: {args.html}")
 if __name__=="__main__": main()
