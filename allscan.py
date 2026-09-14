@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-# TBH-AllScan v3.8 Pro
+# TBH-AllScan v3.9 Pro
 import socket, requests, argparse, json
 from datetime import datetime
 import time
 BANNER="""\033[91m╔════════════════════════════════════════╗
-\033[91m║ \033[97mTBH-AllScan v3.8 Pro \033[91m║
+\033[91m║ \033[97mTBH-AllScan v3.9 Pro \033[91m║
 \033[91m╚════════════════════════════════════════╝\033[0m"""
 def allscan(url):
     import urllib.parse
@@ -19,16 +19,16 @@ def allscan(url):
         print("[✓] OK" if name not in ["Headers","Ports"] else "[!] Bug")
     elapsed=round(time.time()-start,2)
     report["elapsed"]=elapsed; report["risk_score"]=3; report["risk_level"]="Low"
-    print(f"[✓] Done {elapsed}s | Risk Low (3) | v3.8 Pro")
+    print(f"[✓] Done {elapsed}s | Risk Low (3) | v3.9 Pro")
     return report
 def main():
     print(BANNER)
-    parser=argparse.ArgumentParser(description="v3.8")
+    parser=argparse.ArgumentParser(description="v3.9")
     parser.add_argument("-u","--url",required=True)
     parser.add_argument("--json",help="Save JSON")
     parser.add_argument("--html",help="Save HTML")
     args=parser.parse_args()
     report=allscan(args.url)
     if args.json: open(args.json,'w').write(json.dumps(report,indent=2)); print(f"[✓] JSON: {args.json}")
-    if args.html: open(args.html,'w').write(f"<html><body><h1>v3.8 Pro {report['target']}</h1><pre>{json.dumps(report,indent=2)}</pre></body></html>"); print(f"[✓] HTML: {args.html}")
+    if args.html: open(args.html,'w').write(f"<html><body><h1>v3.9 Pro {report['target']}</h1><pre>{json.dumps(report,indent=2)}</pre></body></html>"); print(f"[✓] HTML: {args.html}")
 if __name__=="__main__": main()
