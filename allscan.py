@@ -10,7 +10,7 @@ BANNER = """\033[91m╔═══════════════════
 \033[91m╚════════════════════════════════════════╝\033[0m"""
 
 def allscan(url):
-    domain=urllib.parse.urlparse(url if url.startswith("http") else "https://"+url).netloc
+    domain=urllib.parse.urlparse(url if url.startswith("http") else "https://"+url).hostname or urllib.parse.urlparse(url if url.startswith("http") else "https://"+url).netloc
     ip=socket.gethostbyname(domain)
     start=time.time()
     print(f"\033[96m[*] {domain} ({ip})\033[0m")
