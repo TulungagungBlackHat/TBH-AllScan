@@ -1,94 +1,85 @@
-# TBH-AllScan v4.5 Pro - Menu + Command | All-in-One Bug Bounty Scanner
+# TBH-AllScan
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-v4.5%20Pro-red?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Menu%20%2B%20Command-v4.5-blue?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Termux-Ready-orange?style=for-the-badge">
+  <a href="https://github.com/TulungagungBlackHat/TBH-AllScan/actions/workflows/ci.yml"><img src="https://github.com/TulungagungBlackHat/TBH-AllScan/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/license-MIT-red.svg" alt="License">
+  <img src="https://img.shields.io/badge/python-3.8%2B-blue.svg" alt="Python">
+  <img src="https://img.shields.io/badge/tools-10-orange.svg" alt="Modules">
 </p>
 
-> **Gabungan 10 tools TBH dalam 1 scan** - Sekarang bisa **menu interaktif** atau **command langsung**.
+All-in-one bug bounty scanner: 10 security checks, one command, one report. Interactive menu for beginners, flags for automation.
 
-## ✨ Features (10 Tools)
+Part of the [Tulungagung Black Hat](https://github.com/TulungagungBlackHat) toolset.
 
-| No | Tool | Severity | Fix |
-|----|------|----------|-----|
-| 1 | Headers | Low | Tambah CSP/HSTS |
-| 2 | SSL | Medium | Renew SSL |
-| 3 | Ports | Info | Tutup tidak perlu |
-| 4 | Subdomains | Info | Audit |
-| 5 | Dirs | High | Hapus .env/.git |
-| 6 | CORS | High | Set ACAO spesifik |
-| 7 | XSS | High | Encode output |
-| 8 | OpenRedirect | Medium | Whitelist |
-| 9 | SSRF | High | Whitelist URL |
-| 10 | SQLi | High | Prepared statement |
+## Modules
 
-**Bonus:** Risk Score + JSON + HTML + Fix
+| # | Module | Severity | Typical fix |
+|---|--------|----------|-------------|
+| 1 | Security headers | Low | Add CSP / HSTS |
+| 2 | SSL certificate | Medium | Renew before expiry |
+| 3 | Open ports | Info | Close unused ports |
+| 4 | Subdomains | Info | Audit forgotten assets |
+| 5 | Sensitive directories | High | Remove `.env` / `.git` exposure |
+| 6 | CORS misconfig | High | Restrict `Access-Control-Allow-Origin` |
+| 7 | Reflected XSS | High | Context-aware output encoding |
+| 8 | Open redirect | Medium | Strict allowlist |
+| 9 | SSRF | High | Allowlist outbound destinations |
+| 10 | SQL injection | High | Parameterized queries |
 
-## 📦 Install (Termux / Kali / Linux)
+Plus a **risk score** and JSON + HTML reports with remediation notes.
 
-**Langkah 1 - Install Python & Git:**
-```bash
-pkg update && pkg install python git
-```
+## Install
 
-**Langkah 2 - Clone:**
 ```bash
 git clone https://github.com/TulungagungBlackHat/TBH-AllScan
 cd TBH-AllScan
-pip install requests
+pip install -r requirements.txt
 ```
 
-## 🚀 Cara Jalanin (2 Cara)
+## Usage
 
-### Cara 1 - Menu Interaktif (Gampang, Tanpa Hafal Command)
+**Interactive menu** (no flags to remember):
+
 ```bash
 python3 allscan.py
 ```
-Muncul:
-```
-Pilih mode:
- 1. Scan All-in-One (10 tools)
- 2. Bantuan
- 0. Keluar
-Pilih [1/2/0]: 1
-Masukkan URL (ex: https://example.com): https://example.com
-```
-Scan langsung, tanya `Simpan JSON+HTML? (y/n)` → `y` → `report.json` & `report.html` jadi.
 
-### Cara 2 - Command Langsung (Untuk Hafal Command)
+**Direct command** (for scripts and CI):
+
 ```bash
 python3 allscan.py -u https://example.com --json report.json --html report.html
-cat report.json
-# Buka report.html di browser
 ```
 
-### Bantuan
-```bash
-python3 allscan.py -h
-```
+## Sample Output
 
-## 📸 Contoh Output
 ```
-[*] example.com (172.66.147.243)
-[~] Headers... [!] Bug [Low]
-[~] Ports... [!] Bug [Info]
-[✓] Done 0.5s | Risk Low (3) | 10 Tools
+[*] example.com (93.184.216.34)
+[~] Headers...   [!] Bug [Low]
+[~] Ports...     [!] Bug [Info]
+[~] CORS...      [✓] OK
+[~] XSS...       [✓] OK
+[✓] Done 4.2s | Risk: Low (3/100) | 10 modules
 [✓] JSON: report.json
+[✓] HTML: report.html
 ```
 
-## vs CLI
-| | **AllScan** | **TBH-CLI** |
+## vs TBH-CLI
+
+| | **TBH-AllScan** | [**TBH-CLI**](https://github.com/TulungagungBlackHat/TBH-CLI) |
 |---|---|---|
-| **Tools** | 10 lengkap | 2 ringan |
-| **Output** | JSON+HTML+Fix | Terminal saja |
-| **Cara** | Menu + Command | Menu + Command |
+| Modules | 10 | 35 (terminal-only) |
+| Output | JSON + HTML + fixes | Terminal only |
+| Best for | Reports & submissions | Interactive hunting |
 
-## 🛡️ Aturan
-Hanya untuk scope yang diizinkan!
+## Authorized Use Only
 
-## 👥 TBH
-uchil404 - Tulungagung Black Hat - Always Smile :)
+Only run against scopes you're authorized to test. Every module sends only safe, non-destructive probes — but safe probes against unauthorized systems are still unauthorized. See [SECURITY.md](SECURITY.md).
 
-## 📄 License
-MIT - Educational Only
+## Related Tools
+
+- [TBH-Toolkit](https://github.com/TulungagungBlackHat/TBH-Toolkit) — one-line installer for the whole toolset
+- [TBH-BugBounty](https://github.com/TulungagungBlackHat/TBH-BugBounty) — hunter workflow with HackerOne-ready JSON
+
+## License
+
+[MIT](LICENSE) — Tulungagung Black Hat, East Java, Indonesia. Always Smile :)
