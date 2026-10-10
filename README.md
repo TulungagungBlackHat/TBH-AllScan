@@ -9,6 +9,8 @@
 
 All-in-one bug bounty scanner: 10 security checks, one command, one report. Interactive menu for beginners, flags for automation.
 
+As of **v5.0 every module performs real network checks** — headers, ports, SSL, subdomains, directories, CORS, XSS, open redirect, SSRF, and SQLi probes — with a computed risk score. No simulated results.
+
 Part of the [Tulungagung Black Hat](https://github.com/TulungagungBlackHat) toolset.
 
 ## Modules
