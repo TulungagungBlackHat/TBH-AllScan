@@ -13,7 +13,7 @@ except ImportError:
     print("[!] requests required: pip install requests", file=sys.stderr)
     sys.exit(2)
 
-VERSION = "5.0"
+VERSION = "5.1"
 REPO = "https://github.com/TulungagungBlackHat/TBH-AllScan"
 
 def banner():
@@ -300,11 +300,24 @@ def menu():
             print("Bye - Always Smile :)")
             break
 
+def read_targets(path):
+    targets = []
+    try:
+        with open(path) as fh:
+            for line in fh:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    targets.append(line)
+    except OSError as e:
+        print(f"[!] cannot read targets file: {e}", file=sys.stderr)
+    return targets
+
 def main():
     parser = argparse.ArgumentParser(description=f"TBH-AllScan v{VERSION} - real 10-module scanner")
     parser.add_argument("-u", "--url", help="target URL")
+    parser.add_argument("--targets", help="file with one URL per line (multi-target)")
     parser.add_argument("--json", help="save JSON")
-    parser.add_argument("--html", help="save HTML")
+    parser.add_argument("--html", help="save HTML (single target only)")
     parser.add_argument("--proxy", help="e.g. http://127.0.0.1:8080")
     parser.add_argument("--cookie", help="Cookie header value")
     parser.add_argument("-H", "--header", action="append", help="extra header, repeatable")
@@ -313,34 +326,53 @@ def main():
     parser.add_argument("--version", action="version", version=f"TBH-AllScan {VERSION}")
     args = parser.parse_args()
 
-    if not args.url:
+    if not args.url and not args.targets:
         if len(sys.argv) == 1:
             menu()
             return
-        parser.error("-u is required")
+        parser.error("-u or --targets is required")
 
     print(banner())
     use_color = not args.no_color and not os.environ.get("NO_COLOR")
     print(color("91", "[!] Authorized targets only.", use_color))
-    report = allscan(args.url, args, use_color)
-    if report is None:
+    targets = ([args.url] if args.url else []) + (read_targets(args.targets) if args.targets else [])
+
+    reports = []
+    for i, t in enumerate(targets):
+        if i > 0 and args.targets:
+            print(color("96", "-" * 40, use_color))
+        r = allscan(t, args, use_color)
+        if r:
+            reports.append(r)
+
+    if not reports:
         sys.exit(2)
+
     if args.json:
+        data = (reports[0] if len(reports) == 1 else
+                {"tool": "TBH-AllScan", "version": VERSION,
+                 "summary": {"targets": len(reports),
+                             "findings": sum(len(r["findings"]) for r in reports)},
+                 "targets": reports})
         try:
             with open(args.json, "w") as fh:
-                json.dump(report, fh, indent=2)
+                json.dump(data, fh, indent=2)
             print(f"[✓] JSON: {args.json}")
         except OSError as e:
             print(color("91", f"[!] cannot write JSON: {e}", use_color), file=sys.stderr)
             sys.exit(2)
     if args.html:
-        try:
-            write_html(report, args.html)
-            print(f"[✓] HTML: {args.html}")
-        except OSError as e:
-            print(color("91", f"[!] cannot write HTML: {e}", use_color), file=sys.stderr)
-            sys.exit(2)
-    sys.exit(1 if report["findings"] else 0)
+        if len(reports) > 1:
+            print(color("93", "[!] --html is single-target; skipped for multi-target scan", use_color))
+        else:
+            try:
+                write_html(reports[0], args.html)
+                print(f"[✓] HTML: {args.html}")
+            except OSError as e:
+                print(color("91", f"[!] cannot write HTML: {e}", use_color), file=sys.stderr)
+                sys.exit(2)
+
+    sys.exit(1 if any(r["findings"] for r in reports) else 0)
 
 if __name__ == "__main__":
     main()

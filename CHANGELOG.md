@@ -16,3 +16,9 @@
 - Risk scoring (High=25/Med=10/Low=3/Info=1 capped 100), findings list with fixes
 - Unified TBH v3 CLI: --proxy, --cookie, -H, --timeout, --json, --html, --version
 - Exit codes: 0 clean, 1 findings, 2 error
+
+## [5.1.0] - 2026-10-11
+### Added
+- Multi-target scanning: --targets file (one URL per line)
+- Aggregated JSON for multi-target runs; --html stays single-target
+- Unresolvable targets skipped instead of aborting the batch
