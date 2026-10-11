@@ -1,3 +1,8 @@
+> [!WARNING]
+> **ARCHIVED (2026-10-11)** — superseded by [TBH-CLI](https://github.com/TulungagungBlackHat/TBH-CLI):
+> `python3 tbh -u <url> --json r.json --html r.html` runs 34 real modules (AllScan had 10).
+> No further updates; the repo stays readable for history.
+
 # TBH-AllScan
 
 <p align="center">
